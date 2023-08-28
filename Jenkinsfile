@@ -1,15 +1,18 @@
 pipeline {
     agent any
 
+    environment {
+        PYTHON_EXECUTABLE = sh(script: 'which python', returnStdout: true).trim()
+        PATH = "${PYTHON_EXECUTABLE%/*}:$PATH"
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM', 
-                          branches: [[name: '*/main']], 
-                          userRemoteConfigs: [[url: 'https://github.com/TeknoPathshala/stock.git']]])
+                checkout scm
             }
         }
-        
+
         stage('Build and Deploy') {
             steps {
                 sh 'pip install -r requirements.txt'
