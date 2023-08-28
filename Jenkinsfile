@@ -1,12 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        PYTHON_EXECUTABLE = sh(script: 'which python', returnStdout: true).trim()
-        PATH = "${PYTHON_EXECUTABLE}:${env.PATH}"
-        APP_PID_FILE = 'app.pid'
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -25,6 +19,8 @@ pipeline {
     post {
         always {
             script {
+                def PYTHON_EXECUTABLE = sh(script: 'which python', returnStdout: true).trim()
+                def APP_PID_FILE = 'app.pid'
                 def pid = readFile("${APP_PID_FILE}").trim()
                 sh "kill -9 ${pid}"
             }
