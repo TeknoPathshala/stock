@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         PYTHON_EXECUTABLE = sh(script: 'which python', returnStdout: true).trim()
-        PATH = PYTHON_EXECUTABLE + ':' + env.PATH
+        PATH = "${PYTHON_EXECUTABLE}:${env.PATH}"
     }
 
     stages {
