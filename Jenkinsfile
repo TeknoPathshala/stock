@@ -21,8 +21,13 @@ pipeline {
             script {
                 def PYTHON_EXECUTABLE = sh(script: 'which python', returnStdout: true).trim()
                 def APP_PID_FILE = 'app.pid'
-                def pid = readFile("${APP_PID_FILE}").trim()
-                sh "kill -9 ${pid}"
+                
+                try {
+                    def pid = readFile("${APP_PID_FILE}").trim()
+                    sh "kill -9 ${pid}"
+                } catch (Exception e) {
+                    echo "Error reading or killing process: ${e.message}"
+                }
             }
         }
     }
