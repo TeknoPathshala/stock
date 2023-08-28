@@ -23,9 +23,7 @@ pipeline {
 
     post {
         always {
-            node {
-                sh 'pkill -f "python app.py"'
-            }
+            sh 'pkill -f "python app.py"'
         }
     }
 }
