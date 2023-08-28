@@ -19,12 +19,14 @@ pipeline {
     post {
         always {
             script {
-                def PYTHON_EXECUTABLE = sh(script: 'which python', returnStdout: true).trim()
                 def APP_PID_FILE = 'app.pid'
                 
                 try {
+                    echo "Reading PID from file..."
                     def pid = readFile("${APP_PID_FILE}").trim()
+                    echo "Killing process with PID: ${pid}"
                     sh "pkill -9 -F ${APP_PID_FILE}"
+                    echo "Process killed successfully"
                 } catch (Exception e) {
                     echo "Error reading or killing process: ${e.message}"
                 }
