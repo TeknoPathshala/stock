@@ -4,6 +4,7 @@ pipeline {
     environment {
         PYTHON_EXECUTABLE = sh(script: 'which python', returnStdout: true).trim()
         PATH = "${PYTHON_EXECUTABLE}:${env.PATH}"
+        APP_PID_FILE = 'app.pid'
     }
 
     stages {
@@ -24,8 +25,8 @@ pipeline {
     post {
         always {
             script {
-                def processes = sh(script: "pgrep -f 'python app.py'", returnStdout: true).trim()
-                sh "kill -9 ${processes}"
+                def pid = readFile("${APP_PID_FILE}").trim()
+                sh "kill -9 ${pid}"
             }
         }
     }
