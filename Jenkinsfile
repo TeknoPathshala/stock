@@ -23,7 +23,10 @@ pipeline {
 
     post {
         always {
-            sh 'pkill -f "python app.py"'
+            script {
+                def processes = sh(script: "pgrep -f 'python app.py'", returnStdout: true).trim()
+                sh "kill -9 ${processes}"
+            }
         }
     }
 }
