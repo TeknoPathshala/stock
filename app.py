@@ -46,4 +46,4 @@ def predict(stock_symbol):
     return prediction, current_price, predicted_price
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)  # Bind to all available network interfaces
