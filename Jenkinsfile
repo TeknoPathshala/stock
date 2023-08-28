@@ -11,7 +11,7 @@ pipeline {
         stage('Build and Deploy') {
             steps {
                 sh 'pip install -r requirements.txt'
-                sh 'python app.py &'
+                sh 'nohup python app.py & echo $! > app.pid'
             }
         }
     }
