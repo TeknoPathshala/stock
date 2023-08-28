@@ -24,7 +24,7 @@ pipeline {
                 
                 try {
                     def pid = readFile("${APP_PID_FILE}").trim()
-                    sh "kill -9 ${pid}"
+                    sh "pkill -9 -F ${APP_PID_FILE}"
                 } catch (Exception e) {
                     echo "Error reading or killing process: ${e.message}"
                 }
