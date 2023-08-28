@@ -1,6 +1,7 @@
-# app.py
 from flask import Flask, render_template, request
 import requests
+import os
+import atexit
 
 app = Flask(__name__)
 
@@ -44,6 +45,14 @@ def predict(stock_symbol):
     prediction = 'Buy' if predicted_price > current_price else 'Sell'
 
     return prediction, current_price, predicted_price
+
+def save_pid():
+    pid_file = 'app.pid'
+    with open(pid_file, 'w') as f:
+        f.write(str(os.getpid()))
+
+atexit.register(lambda: os.remove('app.pid') if os.path.exists('app.pid') else None)
+save_pid()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)  # Bind to all available network interfaces
