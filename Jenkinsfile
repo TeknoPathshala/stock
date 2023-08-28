@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        PYTHON_EXECUTABLE = sh(script: 'which python3', returnStdout: true).trim()
+        PATH = "${PYTHON_EXECUTABLE}:${env.PATH}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -10,8 +15,8 @@ pipeline {
 
         stage('Build and Deploy') {
             steps {
-                sh 'pip install -r requirements.txt'
-                sh 'nohup python app.py & echo $! > app.pid'
+                sh 'pip3 install -r requirements.txt'
+                sh 'python3 app.py & echo $! > app.pid'
             }
         }
     }
@@ -19,16 +24,9 @@ pipeline {
     post {
         always {
             script {
-                def APP_PID_FILE = 'app.pid'
-                
-                try {
-                    echo "Reading PID from file..."
-                    def pid = readFile("${APP_PID_FILE}").trim()
-                    echo "Killing process with PID: ${pid}"
-                    sh "pkill -9 -F ${APP_PID_FILE}"
-                    echo "Process killed successfully"
-                } catch (Exception e) {
-                    echo "Error reading or killing process: ${e.message}"
+                def appPidFile = readFile('app.pid').trim()
+                if (appPidFile) {
+                    sh "pkill -F $appPidFile"
                 }
             }
         }
